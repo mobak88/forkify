@@ -7,9 +7,9 @@ import paginationWiew from './views/paginationWiew.js';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-// if (module.hot) {
-//   module.hot.accept();
-// }
+if (module.hot) {
+  module.hot.accept();
+}
 
 const controlRecipes = async function () {
   try {
@@ -19,13 +19,14 @@ const controlRecipes = async function () {
 
     recipeView.renderSpinner();
 
+    // 0) Results view to mark selected search results
+    resultsView.update(model.getSearchResultsPage());
+
     // 1) Loading recipe
     await model.loadRecipe(id);
 
-
     // 2) Rendering recipe
     recipeView.render(model.state.recipe);
-
 
   } catch (err) {
     recipeView.renderError();
@@ -63,9 +64,29 @@ const controlPagination = function (goToPage) {
   paginationWiew.render(model.state.search);
 };
 
+const controlServings = function (newServings) {
+  // Update the recipe servings (in state)
+  model.updateServings(newServings);
+
+  // Update the recipe view
+  // recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
+};
+
+const controlAddBookmark = function () {
+  if (!model.state.recipe.bokmarked) model.addBookmark(model.state.recipe);
+
+  else model.deleteBookmark(model.state.recipe.id);
+
+  console.log(model.state.recipe);
+  recipeView.update(model.state.recipe);
+};
+
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationWiew.addHandlerClick(controlPagination);
 };
