@@ -1,30 +1,29 @@
-import View from './view.js';
+import View from './View.js';
 
-import icons from 'url:../../img/icons.svg';
+// import icons from '../img/icons.svg'; // Parcel 1
+import icons from 'url:../../img/icons.svg'; // Parcel 2
 import { Fraction } from 'fractional';
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
-  _errorMessage = `Could not find that recipe, please try another one.`;
+  _errorMessage = 'We could not find that recipe. Please try another one!';
   _message = '';
-
-
 
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
   }
 
   addHandlerUpdateServings(handler) {
-    this._parentElement.addEventListener('click', function (e) {
+    this._parentElement.addEventListener('click', function(e) {
       const btn = e.target.closest('.btn--update-servings');
       if (!btn) return;
-      const { updateTo } = +btn.dataset;
+      const { updateTo } = btn.dataset;
       if (+updateTo > 0) handler(+updateTo);
     });
   }
 
   addHandlerAddBookmark(handler) {
-    this._parentElement.addEventListener('click', function (e) {
+    this._parentElement.addEventListener('click', function(e) {
       const btn = e.target.closest('.btn--bookmark');
       if (!btn) return;
       handler();
@@ -112,16 +111,17 @@ class RecipeView extends View {
 
   _generateMarkupIngredient(ing) {
     return `
-              <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="${icons}#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity"> ${ing.quantity ? new Fraction(ing.quantity).toString() : ''} </div >
-    <div class="recipe__description">
-      <span class="recipe__unit">${ing.unit}</span>
-      ${ing.description}
-    </div>
-            </li >
+    <li class="recipe__ingredient">
+      <svg class="recipe__icon">
+        <use href="${icons}#icon-check"></use>
+      </svg>
+      <div class="recipe__quantity">${ing.quantity ? new Fraction(ing.quantity).toString() : ''
+      }</div>
+      <div class="recipe__description">
+        <span class="recipe__unit">${ing.unit}</span>
+        ${ing.description}
+      </div>
+    </li>
   `;
   }
 }
